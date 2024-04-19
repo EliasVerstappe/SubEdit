@@ -1,0 +1,9 @@
+2
+00:01:22,277 --> 00:01:27,271
+I should've known that you would be here, Professor McGonagall.
+Ik had moeten weten dat u hier zou zijn, professor McGonagall.
+J'aurais dû savoir que vous seriez ici, professeur McGonagall.
+
+3
+00:01:38,501 --> 00:01:41,668
+Good evening, Professor <font color="#ff00ff">Dumbledore</font>.
