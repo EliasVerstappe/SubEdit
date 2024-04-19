@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text;
 
 namespace SubEdit;
 
@@ -11,7 +10,7 @@ internal static class SRTSerializer
         FileDoesNotExist
     }
 
-    public static ReturnCode Load(FileInfo file, SubTitleFile? output)
+    public static ReturnCode Load(FileInfo file, out SubTitleFile? output)
     {
         output = null;
 
@@ -28,7 +27,7 @@ internal static class SRTSerializer
         {
             if (line.Contains(" --> "))
             {
-                // Save the last chunck
+                // Save the previous chunck
                 output.Add(worker);
 
                 // Create a new record
@@ -37,7 +36,6 @@ internal static class SRTSerializer
                 var times = line.Split(" --> ", StringSplitOptions.TrimEntries);
 
                 if (TimeSpanSerializer.Deserialize(times[0], out var start))
-
                     worker.StartTime = (TimeSpan)start;
                 if (TimeSpanSerializer.Deserialize(times[1], out var end))
                     worker.EndTime = (TimeSpan)end;
@@ -46,10 +44,26 @@ internal static class SRTSerializer
             }
             else if (textSection)
             {
+                // Text section stays active until the current line is a blank line
+                if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line))
+                {
+                    textSection = false;
+                    continue;
+                }
 
+                worker.Lines.Add(line);
             }
         }
 
+        // Save the last subtitle chunck
+        if (textSection)
+            output.Add(worker);
+
         return ReturnCode.Success;
+    }
+
+    public static void Save(FileInfo file, SubTitleFile output)
+    {
+
     }
 }
